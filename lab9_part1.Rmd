@@ -1,0 +1,179 @@
+---
+title: 'Packageless coding: Programming with `base` `r`'
+author: "Renee LaManna"
+date: "11/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Objects and classes
+
+## Vectors
+
+### Creating a vector 
+
+```{r}
+# Numeric vector
+my_vector <- vector(mode = "numeric", length = 100)
+# Logical vector
+my_second_vector <- vector(mode = "logical", length = 20 )
+```
+
+### Vector properties
+
+#### Length
+
+```{r}
+# Length of my vector 
+length(my_vector)
+length(my_second_vector)
+```
+#### Class
+
+```{r}
+# What's in my vector
+class(my_vector)
+class(my_second_vector)
+```
+
+#### Indexing (accessing) vectors
+
+```{r}
+# Using c to create a vector, override my_vector
+my_vector <-c(1:50)
+
+# What's the first element?
+my_vector[1]
+
+# What's the last element?
+my_vector[-1]
+
+# What's the seventh element?
+my_vector[7]
+
+# Select a range from a vector
+my_vector[3:7]
+```
+
+## Matrices
+
+### Creating matrices
+
+```{r}
+# Create a 10 x 10 matrix full of NA's
+my_matrix <- matrix(data = 1:100, nrow = 20, ncol = 5)
+```
+
+### Matrix properties
+
+#### Dimensions
+
+```{r}
+# What are the dimensions
+dim(my_matrix)
+```
+
+#### Length
+
+```{r}
+# How many elements are there
+length(my_matrix)
+```
+
+#### Class
+
+```{r}
+class(my_matrix)
+```
+
+#### Indexing 
+
+```{r}
+# first number indicates row, if include no other number is indicated, going to assume you want all information from 2nd row, even if you dont know how big
+my_matrix[2,]
+
+# index a column
+my_matrix[,3]
+
+# Index a given cell
+my_matrix[8,3]
+
+# Index and replace
+my_matrix[8,3] <- 100000
+
+# Replace an entire column
+my_matrix[,5] <- 10
+```
+
+# Control Flow
+
+## `for` loops
+
+1. variable ( aka counter),  2. sequence (going to repeat things/expression), 3. expression 
+
+```{r}
+for (i in 1:10){
+  print("Hello world!")}
+```
+
+# Generating random numbers
+
+```{r}
+rnorm(n = 5, mean = 10, sd = 2)
+# will get different values everytime you run this because it is random
+```
+
+# Let's combine all of the above
+
+We will use `numeric` to create an empty vector
+We will use `for` to iterate along items of that empty vector
+We will use `[]` to access each slot and fill-in that empty vector
+We will use `rnorm` to sample values from a random normal distribution 
+We will plot the trend
+
+$$N_{t-1} + r\left(1 - \frac{N_{t-1}}{K}\right)$$
+
+$$
+r \sim norm(\mu = 1.5, \sigma = 0.8)
+$$
+
+## Writing the code down
+
+```{r}
+# 1. Set up model parameters:
+
+# Set up value of carrying capacity
+K <- 100
+# Define number of iterations 
+nsteps <- 100
+# Define mu, this is known and sd
+mu <- 0.4
+sigma <- 1
+
+
+# 2. Set up model objects:
+
+# Create a vector that will contain 1 element for population size of each time stamp, year 1 is first posistion of vector, year 2 in second posistion and so on
+N <- vector(mode = "numeric", length = nsteps)
+# Modify first element of population because right now there are not individuals (N = 0) for everything
+N [1] <- 25
+# Formula will then do for rest of years
+
+# 3. Model it:
+
+# Why start at 2? manually modified/indexed first posistion 
+for(t in 2:nsteps){
+  r <- rnorm(n = 1, mean = mu, sd = sigma)
+  N[t] <- N[t-1] + r * (1- (N[t-1] / K))
+}
+
+# 4. Visualize it:
+plot(N)
+```
+
+# Something more
+We will use `matrix` to create an empty matrix (rows are time, columns are runs)
+We will repeat the process
